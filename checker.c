@@ -1,43 +1,18 @@
 #include <stdio.h>
 #include <assert.h>
  
-#define OUTOFBOUNDARY 0
-#define WITHINRANGE 1
- 
-/*Function to check whether the battery paramter is within the range*/
-int checkRange(float data, float min, float max, const char* nameOfBatteryParameter)
-{
-int output = WITHINRANGE;
-if (data > max || data < min)
-{
-  output = OUTOFBOUNDARY;
-  logger(nameOfBatteryParameter);
-}
-return output;
+int isBatteryManagementSystemMeasuresWithinRange(float value, float min, float max, const char* message) {
+  if (value < min || value > max) {
+    printf("%s\n", message);
+    return 0;
+  }
+  return 1;
 }
  
-/*Function to print the error logs*/
-void logger(const char* stringToBePrinted)
-{
-printf("%s out of range!\n",stringToBePrinted);
-}
- 
-int batteryIsOk(float temperature, float soc, float chargeRate) 
-{
-int functionResult = 1; 
-if(checkRange(temperature,0,45,"Temperature") == OUTOFBOUNDARY)
-{
-  functionResult = 0;
-}
-else if(checkRange(soc,20,80,"State of Charge") == OUTOFBOUNDARY)
-{
-  functionResult = 0;
-}
-else
-{
-  functionResult = checkRange(chargeRate,0,0.8,"Charge Rate");
-}
-  return functionResult;
+int batteryIsOk(float temperature, float soc, float chargeRate) {
+  return isBatteryManagementSystemMeasuresWithinRange(temperature, 0, 45, "Temperature out of range!")&&
+    isBatteryManagementSystemMeasuresWithinRange(soc, 20, 80, "State of Charge out of range!")&&
+    isBatteryManagementSystemMeasuresWithinRange(chargeRate, 0, 0.8, "Charge Rate out of range!");
 }
  
 int main() {
